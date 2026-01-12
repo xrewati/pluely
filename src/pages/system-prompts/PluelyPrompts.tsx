@@ -48,7 +48,12 @@ const SELECTED_PLUELY_MODEL_STORAGE_KEY = "selected_pluely_model";
 const SELECTED_PLUELY_PROMPT_STORAGE_KEY = "selected_pluely_prompt";
 
 export const PluelyPrompts = () => {
-  const { setSystemPrompt, hasActiveLicense } = useApp();
+  const {
+    setSystemPrompt,
+    hasActiveLicense,
+    setSupportsImages,
+    pluelyApiEnabled,
+  } = useApp();
   const [prompts, setPrompts] = useState<PluelyPrompt[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -163,6 +168,13 @@ export const PluelyPrompts = () => {
       );
 
       if (matchingModel) {
+        // Update supportsImages based on model modality
+        if (pluelyApiEnabled) {
+          const hasImageSupport =
+            matchingModel.modality?.includes("image") ?? false;
+          setSupportsImages(hasImageSupport);
+        }
+
         await invoke("secure_storage_save", {
           items: [
             {

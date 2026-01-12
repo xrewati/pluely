@@ -57,6 +57,7 @@ export const PluelyApiSetup = () => {
     hasActiveLicense,
     setHasActiveLicense,
     getActiveLicenseStatus,
+    setSupportsImages,
   } = useApp();
 
   const [licenseKey, setLicenseKey] = useState("");
@@ -227,6 +228,13 @@ export const PluelyApiSetup = () => {
     setSelectedModel(model);
     setIsPopoverOpen(false); // Close popover when model is selected
     setSearchValue(""); // Reset search when model is selected
+
+    // Update supportsImages based on the selected model
+    if (pluelyApiEnabled) {
+      const hasImageSupport = model.modality?.includes("image") ?? false;
+      setSupportsImages(hasImageSupport);
+    }
+
     try {
       await invoke("secure_storage_save", {
         items: [

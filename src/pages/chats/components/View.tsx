@@ -36,7 +36,7 @@ import {
 
 const View = () => {
   const { conversationId } = useParams();
-  const { hasActiveLicense } = useApp();
+  const { hasActiveLicense, supportsImages } = useApp();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<ChatConversation | null>(null);
 
@@ -270,7 +270,7 @@ const View = () => {
                     isLoading={completion.isLoading}
                     isFilesPopoverOpen={completion.isFilesPopoverOpen}
                     setIsFilesPopoverOpen={completion.setIsFilesPopoverOpen}
-                    disabled={!hasActiveLicense}
+                    disabled={!hasActiveLicense || !supportsImages}
                   />
                   <ChatAudio
                     micOpen={completion.micOpen}
@@ -285,7 +285,7 @@ const View = () => {
                     isLoading={completion.isLoading}
                     captureScreenshot={completion.captureScreenshot}
                     isScreenshotLoading={completion.isScreenshotLoading}
-                    disabled={!hasActiveLicense}
+                    disabled={!hasActiveLicense || !supportsImages}
                   />
                 </div>
 
