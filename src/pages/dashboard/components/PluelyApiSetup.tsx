@@ -27,6 +27,7 @@ interface ActivationResponse {
     name: string;
     created_at: string;
   };
+  is_dev_license?: boolean;
 }
 
 interface StorageResult {
@@ -175,7 +176,9 @@ export const PluelyApiSetup = () => {
         setLicenseKey(""); // Clear the input
 
         // Auto-enable Pluely API when license is activated
-        setPluelyApiEnabled(true);
+        if (!response?.is_dev_license) {
+          setPluelyApiEnabled(true);
+        }
 
         await loadLicenseStatus(); // Reload status
         await getActiveLicenseStatus();

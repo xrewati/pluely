@@ -128,10 +128,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const getActiveLicenseStatus = async () => {
-    const response: { is_active: boolean } = await invoke(
-      "validate_license_api"
-    );
+    const response: { is_active: boolean; is_dev_license: boolean } =
+      await invoke("validate_license_api");
     setHasActiveLicense(response.is_active);
+
+    if (response?.is_dev_license) {
+      setPluelyApiEnabled(false);
+    }
+
     // Check if the auto configs are enabled
     const autoConfigsEnabled = localStorage.getItem("auto-configs-enabled");
     if (response.is_active && !autoConfigsEnabled) {
