@@ -390,14 +390,41 @@ export function useSystemAudio() {
   );
 
   const handleQuickActionClick = async (action: string) => {
-    setLastTranscription(action); // Show the action as if it were a transcription
     setError("");
 
     const effectiveSystemPrompt = useSystemPrompt
       ? systemPrompt || DEFAULT_SYSTEM_PROMPT
       : contextContent || DEFAULT_SYSTEM_PROMPT;
 
-    const previousMessages = conversation.messages.map((msg) => {
+    // Include the most recent transcription in conversation history if it exists
+    let updatedMessages = [...conversation.messages];
+    let shouldUpdateConversation = false;
+
+    if (lastTranscription && lastTranscription.trim()) {
+      const lastMessage = updatedMessages[updatedMessages.length - 1];
+      // Only add if it's not already the last message
+      if (!lastMessage || lastMessage.content !== lastTranscription) {
+        const timestamp = Date.now();
+        const userMessage = {
+          id: generateMessageId("user", timestamp),
+          role: "user" as const,
+          content: lastTranscription,
+          timestamp,
+        };
+        updatedMessages.push(userMessage);
+        shouldUpdateConversation = true;
+
+        // Update conversation state with the latest transcription
+        setConversation((prev) => ({
+          ...prev,
+          messages: [userMessage, ...prev.messages],
+          updatedAt: timestamp,
+          title: prev.title || generateConversationTitle(lastTranscription),
+        }));
+      }
+    }
+
+    const previousMessages = updatedMessages.map((msg) => {
       return { role: msg.role, content: msg.content };
     });
 
