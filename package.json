@@ -38,8 +38,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri",
-    "dist": "electron-builder"
+    "tauri": "tauri"
   },
   "dependencies": {
     "@bany/curl-to-json": "^1.2.8",
